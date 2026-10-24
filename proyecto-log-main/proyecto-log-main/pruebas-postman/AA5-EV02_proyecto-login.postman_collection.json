@@ -1,0 +1,89 @@
+{
+  "info": {
+    "name": "AA5-EV02 - API proyecto-login",
+    "description": "Testing de la API de registro e inicio de sesion (GA7-220501096-AA5-EV01). Ejecutar las peticiones EN ORDEN con el servidor corriendo (npm start).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:3000" }
+  ],
+  "item": [
+    {
+      "name": "1. Registro exitoso",
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+        "pm.test('Status 201', () => pm.response.to.have.status(201));",
+        "pm.test('exito = true', () => pm.expect(pm.response.json().exito).to.eql(true));"
+      ]}}],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"usuario\": \"brandon\",\n  \"contrasena\": \"123456\"\n}" },
+        "url": { "raw": "{{base_url}}/api/registro", "host": ["{{base_url}}"], "path": ["api", "registro"] }
+      }
+    },
+    {
+      "name": "2. Registro con usuario duplicado",
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+        "pm.test('Status 409', () => pm.response.to.have.status(409));",
+        "pm.test('exito = false', () => pm.expect(pm.response.json().exito).to.eql(false));"
+      ]}}],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"usuario\": \"brandon\",\n  \"contrasena\": \"123456\"\n}" },
+        "url": { "raw": "{{base_url}}/api/registro", "host": ["{{base_url}}"], "path": ["api", "registro"] }
+      }
+    },
+    {
+      "name": "3. Registro con datos incompletos",
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+        "pm.test('Status 400', () => pm.response.to.have.status(400));",
+        "pm.test('exito = false', () => pm.expect(pm.response.json().exito).to.eql(false));"
+      ]}}],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"usuario\": \"maria\"\n}" },
+        "url": { "raw": "{{base_url}}/api/registro", "host": ["{{base_url}}"], "path": ["api", "registro"] }
+      }
+    },
+    {
+      "name": "4. Login exitoso",
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+        "pm.test('Status 200', () => pm.response.to.have.status(200));",
+        "pm.test('Autenticacion satisfactoria', () => pm.expect(pm.response.json().mensaje).to.eql('Autenticación satisfactoria'));"
+      ]}}],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"usuario\": \"brandon\",\n  \"contrasena\": \"123456\"\n}" },
+        "url": { "raw": "{{base_url}}/api/login", "host": ["{{base_url}}"], "path": ["api", "login"] }
+      }
+    },
+    {
+      "name": "5. Login con contrasena incorrecta",
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+        "pm.test('Status 401', () => pm.response.to.have.status(401));",
+        "pm.test('Error en la autenticacion', () => pm.expect(pm.response.json().mensaje).to.eql('Error en la autenticación'));"
+      ]}}],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"usuario\": \"brandon\",\n  \"contrasena\": \"clave-mala\"\n}" },
+        "url": { "raw": "{{base_url}}/api/login", "host": ["{{base_url}}"], "path": ["api", "login"] }
+      }
+    },
+    {
+      "name": "6. Login con usuario inexistente",
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+        "pm.test('Status 401', () => pm.response.to.have.status(401));"
+      ]}}],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"usuario\": \"noexiste\",\n  \"contrasena\": \"123456\"\n}" },
+        "url": { "raw": "{{base_url}}/api/login", "host": ["{{base_url}}"], "path": ["api", "login"] }
+      }
+    }
+  ]
+}
